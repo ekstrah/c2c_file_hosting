@@ -8,8 +8,8 @@
 #define BUF_SIZE 1024
 typedef struct pack
 {
-	char id[30];
-	char msg[200];
+	char id[30]; //클라이언트 ID
+	char msg[200]; //
 }pack;
 void read_routine(int sock, char *buf);
 void write_routine(int sock, char *buf, pack* sending);
@@ -47,9 +47,9 @@ int main(int argc, char *argv[])
 	scanf("%s ", sending.id);
 	//fgets(sending.id, 30, stdin);
 
-	pid = fork();
-	if (pid == 0) write_routine(sock, message, &sending);
-	else read_routine(sock, message);
+	pid = fork(); //멀티프로세스
+	if (pid == 0) write_routine(sock, message, &sending); //전송
+	else read_routine(sock, message); //수신
 
 	close(sock);
 	return 0;
