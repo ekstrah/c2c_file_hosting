@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
 
 	/* bind the socket to any valid IP address and a specific port */
 
-	memset((char *)&myaddr, 0, sizeof(myaddr))
+	memset((char *)&myaddr, 0, sizeof(myaddr));
 	myaddr.sin_family = AF_INET;
     //bind to a specified address and port number
 //    myaddr.sin_addr.s_addr = inet_addr("127.0.0.1");
