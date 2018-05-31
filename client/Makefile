@@ -1,2 +1,2 @@
 all:
-	gcc -o client client_tools.c client.c receivefile.c transferfile.c -lncurses
+	gcc -o client udp-recv.c udp-send.c client.c -lncurses

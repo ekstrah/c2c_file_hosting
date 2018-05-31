@@ -1,6 +1,8 @@
 #include "my_header.h"
+#include "color.h"
 
-char menu_list[2][3][20] = {{"1. Login", "2. Create Account", "3. Exit"},{"1. Upload file", "2. Download file", "3. Logout"}};
+char menu_list[2][3][30] = {{"1. LAN sharing", "2. Broad sharing", "3. Quit"},
+	{"1. Upload file", "2. Download file", "3. Back to previous menu"}};
 
 int yMax, xMax;
 WINDOW *menuwin;
@@ -9,7 +11,7 @@ void menu_open()
 {
 	/* NCURSES START */
 	initscr();
-	cbreak();
+//	cbreak();
 
 	getmaxyx(stdscr, yMax, xMax);
 	menuwin = newwin(5, 0, 0, 0);
@@ -65,84 +67,111 @@ void menu_close()
 
 int main(int argc, char **argv)
 {
-	int menu_num;
-	char str[20];
+	int menu_num1, menu_num2;
+	char target[3][20];
 	for(;;){
 		menu_open();
-		menu_num = select_menu(0);	
-//		mvprintw(yMax-1,0,"Your chocie was %d", menu_num+1);
-		switch(menu_num){
-			case 0: 
+		menu_num1 = select_menu(0);
+		switch(menu_num1){
+			case 0: // LAN sharing
+				clear();
 				menu_close();
-				menu_open();
-				mvprintw(2, 2, "ID : ");
-				getstr(str);
-				mvprintw(LINES - 2, 0, "You Entered: %s", str);
-				if( login_server(str) < 0 ){
-					mvprintw(LINES - 1, 0, "There is no ID : %s Press any key", str);
-					getch();
-					menu_close();
-				}
-				else{
-					clear();
-					menu_close();
-					for(;;){
+				for(;;){
 					menu_open();
-					menu_num = select_menu(1);
-					switch(menu_num){
-						case 0:
+					menu_num2 = select_menu(1);
+					switch(menu_num2){
+						case 0: // file upload
 							menu_close();
 							menu_open();
-							mvprintw(2, 2, "File name to upload : ");
-							getstr(str);
-							mvprintw(LINES - 2, 0, "You Entered: %s", str);
-							if( file_transfer(str) < 0 )
-								mvprintw(LINES - 1, 0, "Fail to upload file Press any key", str);
+							mvprintw(1, 2, "(ex ./folder/)");
+							mvprintw(2, 2, "Enter the file path : ");
+							getstr(target[0]);
+							mvprintw(LINES - 2, 0, "You Entered: %s", target[0]);
+							menu_close();
+							menu_open();
+							mvprintw(1, 2, "(ex cat.jpg)");
+							mvprintw(2, 2, "Enter the file name : ");
+							getstr(target[1]);
+							mvprintw(LINES - 2, 0, "You Entered: %s", target[1]);
+							menu_close();
+							menu_open();
+							mvprintw(1, 2, "(ex 192.168.0.1)");
+							mvprintw(2, 2, "Enter target IP address : ");
+							getstr(target[2]);
+							mvprintw(LINES - 2, 0, "You Entered: %s", target[2]);
+							if( file_upload(target[0], target[1], target[2]) < 0  )
+								mvprintw(LINES - 1, 0, "Fail to upload file Press any key");
 							else
-								mvprintw(LINES - 1, 0, "Success to upload file Press any key", str);
+								mvprintw(LINES - 1, 0, "Success to upload file Press any key");
 							getch();
 							menu_close();
 							break;
-						case 1:
+						case 1: // file download
 							menu_close();
 							menu_open();
-							mvprintw(2, 2, "File name to download : ");
-							getstr(str);
-							mvprintw(LINES - 2, 0, "You Entered: %s", str);
-							if(filename_send(str) < 0)
-								mvprintw(LINES - 1, 0, "Fail to download file Press any key", str);
-							else if( file_receive(str) < 0 )
-								mvprintw(LINES - 1, 0, "Fail to download file Press any key", str);
-							else
-								mvprintw(LINES - 1, 0, "Success to download file Press any key", str);
+							mvprintw(1, 2, "(ex ./folder/)");
+							mvprintw(2, 2, "Enter the file path : ");
+							getstr(target[0]);
+							mvprintw(LINES - 2, 0, "You Entered: %s", target[0]);
+							file_download(target[0]);
+							mvprintw(LINES - 1, 0, "Success to download file Press any key");
 							getch();
 							menu_close();
-							break;
-						}
-						clear();
-						menu_close();
-						if( menu_num == 2 )
 							break;
 					}
+					if( menu_num2 == 2 )
+						break;
 				}
 				break;
-			case 1:
+			case 1: // broad sharing
+				clear();
 				menu_close();
-				menu_open();
-				mvprintw(2, 2, "Please enter your ID : ");
-				getstr(str);
-				mvprintw(LINES - 2, 0, "You Entered: %s", str);
-				add_account(str);
-				mvprintw(LINES - 1, 0, "Press any key");
-				getch();
-				menu_close();
+				for(;;){
+					menu_open();
+					menu_num2 = select_menu(1);
+					switch(menu_num2){
+						case 0: // file upload
+							menu_close();
+							menu_open();
+							mvprintw(2, 2, "(ex ./folder/)");
+							mvprintw(3, 2, "Enter the file path  : ");
+							getstr(target[0]);
+							mvprintw(LINES - 2, 0, "You Entered: %s", target[0]);
+							menu_close();
+							menu_open();
+							mvprintw(2, 2, "(ex cat.jpg)");
+							mvprintw(3, 2, "Enter the file name  : ");
+							getstr(target[1]);
+							mvprintw(LINES - 2, 0, "You Entered: %s", target[1]);
+							menu_close();
+							menu_open();
+							mvprintw(2, 2, "(ex 192.168.0.1)");
+							mvprintw(3, 2, "Enter target IP address  : ");
+							getstr(target[2]);
+							mvprintw(LINES - 2, 0, "You Entered: %s", target[2]);
+							if( file_upload(target[0], target[1], target[2]) < 0  )
+								mvprintw(LINES - 1, 0, "Fail to upload file Press any key");
+							else
+								mvprintw(LINES - 1, 0, "Success to upload file Press any key");
+							getch();
+							menu_close();
+							break;
+						case 1: // file download
+							break;
+						case 2: // back to previous menu
+							break;
+					}
+					clear();
+					menu_close();
+				}
 				break;
-			case 2:
-				menu_close();
-				return 0;
-		}
+			}
+		if( menu_num1 == 2 )
+			break;
 		clear();
 		menu_close();
 	}
-	
+	clear();
+	menu_close();
 }
+

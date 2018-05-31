@@ -32,16 +32,11 @@
 
 #define DEFAULT_FILE_NAME "new_file"
 
-// transferfile.c
-unsigned long fsize(FILE **f);
-int copy_size(unsigned long file_size, int send_qtd);
-int hasContent();
-unsigned long packets_counter(unsigned long file_size);
-char ack(char atual);
-int file_transfer(char *);
+// udp-recv.c
+int file_upload(char*, char*, char*);
 
-// receivefile.c
-int file_receive(char *);
+// udp-send.c
+int file_download(char*);
 
 // error.c
 void kill(const char *msg);
